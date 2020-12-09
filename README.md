@@ -34,7 +34,6 @@ concurrent_trie
 │  ├─ Write_Intensive.png
 │  └─ Write_Intensive_final.png
 ├─ Makefile
-├─ plots.md
 ├─ README.md
 ├─ tests
 │  ├─ multi_thread
