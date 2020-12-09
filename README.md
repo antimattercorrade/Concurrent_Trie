@@ -1,33 +1,205 @@
-# Assignment 2 Question 1
+## Concurrent Trie Data Structure ⭐
 
-Your task is to define the implementations of the various functions defined in `trie.h` to implement a [Trie](https://en.wikipedia.org/wiki/Trie). The implementation of the functions must be filled in `trie.c`. The description of what each function is supposed to do is provided in `trie.h`. You can write as many auxilary/helper functions as you want in `trie.c`. Testing code has been provided. You are not allowed to change the function names or parameters in `trie.h` and `trie.c` as they are vital for running the testing code. In `trie.h`, you are only allowed to add additional variables to the structure `_trie_t`.
+Implementation of Concurrent Trie Data Structure using Single Locking, Reader Writer's Locking and Hand over Hand Locking. 
 
-Your implementation of Trie must to concurrent. There are many ways of doing it but you have to implement three of them: using a single mutex lock for the entire trie, using a reader writer lock and using hand on hand locking. You have to provide all three implementations in this template. You have to use hand on hand locking when `_NO_HOH_LOCK_TRIE` has not been defined. Otherwise, you use single mutex lock when `_S_LOCK_TRIE` has been defined, the reader writer lock when it has not been defined. To accomplish this, look into `#indef` and `#ifndef`. Please ensure that memory leaks are kept to a minimum (the makefile has already been set to run test code using valgrind to make it easier for you to find memory leaks). Please add your own rules in the `Makefile` only after the last line. 
+### Directory Structure 📁
 
-Here are some resources regarding concurrent data structures which might prove helpful:
-- [Chapter 29: Lock-based Concurrent Data Structures](http://pages.cs.wisc.edu/~remzi/OSTEP/threads-locks-usage.pdf)
-- [Readers-writer Problems](https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem)
-- [Pthread Reader Writer Lock](https://pubs.opengroup.org/onlinepubs/009695399/functions/pthread_rwlock_tryrdlock.html)
-- [Different locking techniques for linked list](http://www.cs.technion.ac.il/~erez/courses/seminar/talks/05.pdf)
+```
+concurrent_trie
+├─ concurrent_threads
+│  ├─ 50-50.png
+│  ├─ 50-50_final.png
+│  ├─ CSV
+│  │  ├─ hoh_lock.csv
+│  │  ├─ rw_lock.csv
+│  │  └─ s_lock.csv
+│  ├─ data
+│  │  ├─ find
+│  │  │  └─ work.txt
+│  │  ├─ initial
+│  │  │  └─ work.txt
+│  │  ├─ pref
+│  │  │  └─ work.txt
+│  │  └─ rem
+│  │     └─ work.txt
+│  ├─ generate.h
+│  ├─ hoh_lock_trie.c
+│  ├─ Makefile
+│  ├─ plot.py
+│  ├─ Read_Intensive.png
+│  ├─ Read_Intensive_final.png
+│  ├─ rw_lock_trie.c
+│  ├─ s_lock_trie.c
+│  ├─ workload.py
+│  ├─ Write_Intensive.png
+│  └─ Write_Intensive_final.png
+├─ Makefile
+├─ plots.md
+├─ README.md
+├─ tests
+│  ├─ multi_thread
+│  │  ├─ find
+│  │  │  ├─ 1.txt
+│  │  │  ├─ 2.txt
+│  │  │  ├─ 3.txt
+│  │  │  ├─ exp_find_1.txt
+│  │  │  ├─ exp_find_2.txt
+│  │  │  └─ exp_find_3.txt
+│  │  ├─ initial
+│  │  │  ├─ 1.txt
+│  │  │  ├─ 2.txt
+│  │  │  ├─ 3.txt
+│  │  │  └─ exp_ins.txt
+│  │  ├─ pref
+│  │  │  ├─ 1.txt
+│  │  │  ├─ 2.txt
+│  │  │  ├─ 3.txt
+│  │  │  ├─ exp_1.txt
+│  │  │  ├─ exp_2.txt
+│  │  │  └─ exp_3.txt
+│  │  └─ rem
+│  │     ├─ 1.txt
+│  │     ├─ 2.txt
+│  │     ├─ 3.txt
+│  │     └─ exp.txt
+│  └─ single_thread
+│     ├─ exp_ins.txt
+│     ├─ exp_rem.txt
+│     ├─ find_test.txt
+│     ├─ find_test_exp.txt
+│     ├─ initial.txt
+│     ├─ pref_text.txt
+│     ├─ pref_text_exp.txt
+│     └─ rem_list.txt
+├─ trie.c
+├─ trie.h
+└─ trie_size
+   ├─ 50-50.png
+   ├─ 50-50_final.png
+   ├─ CSV
+   │  ├─ hoh_lock.csv
+   │  ├─ rw_lock.csv
+   │  └─ s_lock.csv
+   ├─ data
+   │  ├─ find
+   │  │  └─ 1.txt
+   │  ├─ initial
+   │  │  └─ 1.txt
+   │  ├─ pref
+   │  │  └─ 1.txt
+   │  └─ rem
+   │     └─ 1.txt
+   ├─ generate.h
+   ├─ hoh_lock_trie.c
+   ├─ Makefile
+   ├─ plot.py
+   ├─ Read_Intensive.png
+   ├─ Read_Intensive_final.png
+   ├─ rw_lock_trie.c
+   ├─ s_lock_trie.c
+   ├─ workload.py
+   ├─ Write_Intensive.png
+   └─ Write_Intensive_final.png
 
-Furthermore, you have to provide plots to compare the performance of the locking techniques implemented against the following parameters:
-- Number of concurrent threads
-- Different types of workload:
-  1. Write intensive workload
-  2. Read intensive workload
-  3. Mixed Read / Write workload (50%-50%)
-- Size of the tree
+```
 
-Present all your plots in the file `plots.md`.
+### Feature Checklist ✅
+```
+✅ Concurreny
+✅ Autocompletion, Insert, Find, Delete Key and Delete Trie
+✅ Single Locking
+✅ Hand Over Hand Locking
+✅ Reader-Writer's Locking 
+```
 
-## Compiling the test code:
+### Instructions to Run 🏃
+
+- Run `make` to run all the tests. For specific tests, follow the instructions below:
+
+### Compiling the test code:
 - **Single Threaded:** `make test_trie_single_threaded`
 - **Multi Threaded (Single Locking):** `make test_trie_s_lock` 
 - **Multi Threaded (R/W Lock):** `make test_trie_rw_lock`
 - **Multi Threaded (Hand on Hand Lock):** `make test_trie_hoh_lock`
 
-## Compiling and running the tests:
+
+### Compiling and running the tests:
 - **Single Threaded:** `make single_threaded`
 - **Multi Threaded (Single Locking):** `make s_lock` 
 - **Multi Threaded (R/W Lock):** `make rw_lock`
 - **Multi Threaded (Hand on Hand Lock):** `make hoh_lock`
+
+### Load Testing 🚦
+
+  - Install numpy using `pip install numpy`
+  - Install scipy using `pip install scipy`
+  - Install matplotlib using `pip install matplotlib`
+  
+### Concurrent Threads
+
+In the concurrent_threads folder:
+
+  - Run `make workload` to generate the workload.
+  - Run `make` to compile and execute the files as well as create the plots.
+  
+### Trie Size
+
+In the trie_size folder:
+
+  - Run `make workload` to generate the workload.
+  - Run `make` to compile and execute the files as well as create the plots.
+
+
+### Results and Conclusions 📊
+
+For plotting insert and find have been used for 50-50 workload, while only insert and find are used in write intensive case and read intensive case respectively.
+ 
+### Concurrent Threads
+
+* Varying the number of concurrent threads from 1 to 100
+* Workload with 100000 entries per file
+
+* Plot for 50-50 workload
+
+50-50 Workload|  50-50 Workload Averaged
+:-------------------------:|:-------------------------:
+![alt text](./concurrent_threads/50-50.png "50-50 Non Averaged")  |  ![alt text](./concurrent_threads/50-50_final.png "50-50 Averaged")
+
+* Plot for Read Intensive workload
+
+Read Intensive Workload|  Read Intensive Workload Averaged
+:-------------------------:|:-------------------------:
+![alt text](./concurrent_threads/Read_Intensive.png "Read Intensive Non Averaged")  | ![alt text](./concurrent_threads/Read_Intensive_final.png "Read Intensive Averaged")
+
+* Plot for Write Intensive workload
+
+Write Intensive Workload|  Write Intensive Workload Averaged
+:-------------------------:|:-------------------------:
+![alt text](./concurrent_threads/Write_Intensive.png "Write Intensive Non Averaged")  | ![alt text](./concurrent_threads/Write_Intensive_final.png "Write Intensive Averaged")
+
+
+### Trie Size
+
+* Varying the trie size from 1 to 100
+* Taking 100 concurrent threads
+* Workload with 15000 entries per file
+
+* Plot for 50-50 workload
+
+50-50 Workload|  50-50 Workload Averaged
+:-------------------------:|:-------------------------:
+![alt text](./trie_size/50-50.png "50-50 Non Averaged")  |  ![alt text](./trie_size/50-50_final.png "50-50 Averaged")
+
+* Plot for Read Intensive workload
+
+Read Intensive Workload|  Read Intensive Workload Averaged
+:-------------------------:|:-------------------------:
+![alt text](./trie_size/Read_Intensive.png "Read Intensive Non Averaged")  | ![alt text](./trie_size/Read_Intensive_final.png "Read Intensive Averaged")
+
+* Plot for Write Intensive workload
+
+Write Intensive Workload|  Write Intensive Workload Averaged
+:-------------------------:|:-------------------------:
+![alt text](./trie_size/Write_Intensive.png "Write Intensive Non Averaged")   | ![alt text](./trie_size/Write_Intensive_final.png "Write Intensive Averaged")
+
+   
